@@ -1,11 +1,14 @@
 package info.varden.hauk.system.security;
 
+import android.content.Context;
+import android.os.Build;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.KeyStore;
+import java.security.spec.AlgorithmParameterSpec;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
@@ -27,8 +30,13 @@ public final class KeyStoreHelper {
     private static final String TRANSFORMATION = "AES/GCM/NoPadding";
     private static final int GCM_AUTH_TAG_LENGTH = 128;
 
+    private static Context context = null;
     private static KeyStore store = null;
     private SecretKey key = null;
+
+    public static initStaticResources(Context context) {
+        KeyStoreHelper.context = context;
+    }
 
     /**
      * Retrieves a key store helper for the given key store alias.
@@ -43,21 +51,48 @@ public final class KeyStoreHelper {
             // Check if the alias exists. If not, create it.
             if (!store.containsAlias(alias.getAlias())) {
                 Log.i("Generating new key for alias %s", alias); //NON-NLS
-                KeyGenerator keygen = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEY_STORE);
-                KeyGenParameterSpec spec = new KeyGenParameterSpec.Builder(alias.getAlias(), KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
-                        .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
-                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
-                        .build();
+
+                KeyGenerator keygen = KeyGenerator.getInstance("AES", ANDROID_KEY_STORE);
+                AlgorithmParameterSpec spec = this.getAlgorithmParameterSpec(alias);
                 keygen.init(spec);
                 this.key = keygen.generateKey();
-            } else {
+            }
+            else {
                 Log.i("Loading existing key for alias %s", alias); //NON-NLS
                 KeyStore.SecretKeyEntry keyEntry = (KeyStore.SecretKeyEntry) store.getEntry(alias.getAlias(), null);
                 this.key = keyEntry.getSecretKey();
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             Log.e("Unable to load key store or generate keys", e); //NON-NLS
         }
+    }
+
+    private AlgorithmParameterSpec getAlgorithmParameterSpec(KeyStoreAlias alias) throws Exception {
+        AlgorithmParameterSpec spec = null;
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            spec = (AlgorithmParameterSpec) new KeyGenParameterSpec.Builder(alias.getAlias(), KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
+                .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                .build();
+        }
+        else if (Build.VERSION.SDK_INT >= 18) {
+            if (KeyStoreHelper.context != null) {
+                spec = (AlgorithmParameterSpec) new KeyPairGeneratorSpec.Builder(KeyStoreHelper.context)
+                    .setAlias(alias.getAlias())
+                    .setKeyType("AES")
+                    .build();
+            }
+            else {
+                throw new Exception("Context is null");
+            }
+        }
+        else {
+            throw new Exception("AlgorithmParameterSpec subclass is not supported");
+        }
+
+        return spec;
     }
 
     /**
