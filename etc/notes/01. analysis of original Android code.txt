@@ -1,0 +1,99 @@
+--------------------------------------------------------------------------------
+
+support libraries:
+==================
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.preference.EditTextPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceDataStore;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
+
+--------------------------------------------------------------------------------
+
+classes requiring API greater than 1:
+=====================================
+
+https://developer.android.com/reference/android/util/Base64
+  API 8
+
+https://developer.android.com/reference/java/nio/charset/StandardCharsets
+  API 19 (not needed)
+  NOTES:
+    file: android\app\src\main\java\info\varden\hauk\http\ConnectionThread.java
+          android\app\src\main\java\info\varden\hauk\http\LocationUpdatePacket.java
+          android\app\src\main\java\info\varden\hauk\system\security\KeyStoreHelper.java
+    TODO: replace "StandardCharsets.UTF_8.name()" with "UTF-8"
+          replace "StandardCharsets.UTF_8"        with "UTF-8"
+
+https://developer.android.com/reference/android/content/ClipData
+https://developer.android.com/reference/android/content/ClipboardManager
+  API 11
+
+https://developer.android.com/reference/android/app/NotificationChannel
+  API 26 (if Build.VERSION.SDK_INT >= 26)
+
+https://developer.android.com/reference/javax/crypto/spec/GCMParameterSpec
+  API 19
+  NOTES:
+    file: android\app\src\main\java\info\varden\hauk\system\security\KeyStoreHelper.java
+  MINSDK:
+    Android 4.4 KitKat
+
+https://developer.android.com/reference/android/security/keystore/KeyGenParameterSpec
+https://developer.android.com/reference/android/security/keystore/KeyProperties
+  API 23
+  NOTES:
+    file: android\app\src\main\java\info\varden\hauk\system\security\KeyStoreHelper.java
+    TODO: provide alternate implementation for older versions of Android
+  MINSDK:
+    Android 6.0 Marshmallow
+
+--------------------------------------------------------------------------------
+
+.xml drawables:
+===============
+
+ic_brightness_3.xml
+ic_bug_report.xml
+ic_button_copy.xml
+ic_button_share.xml
+ic_button_stop.xml
+ic_code.xml
+ic_directions_walk.xml
+ic_icon.xml
+ic_image.xml
+ic_location_disabled.xml
+ic_lock_open.xml
+ic_logo.xml
+ic_notify.xml
+ic_no_connection.xml
+ic_person.xml
+ic_proxy.xml
+ic_security.xml
+ic_server.xml
+ic_settings.xml
+ic_timer.xml
+
+NOTES:
+======
+  * 16 of the 20 files include:
+      android:fillColor="?attr/colorControlNormal"
+  * 1 of the 20 files (ic_logo) includes:
+      android:strokeColor="?attr/editTextColor"
+      android:strokeColor="?attr/colorAccent"
+  * the author mentions in this issue:
+      https://github.com/bilde2910/Hauk/issues/198#issuecomment-1676374800
+    that these xml attributes doesn't work in Android 6,
+    which is why the minSdkVersion was increased from 23 to 24 (Android 7).
+
+--------------------------------------------------------------------------------

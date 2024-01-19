@@ -1,0 +1,23 @@
+--------------------------------------------------------------------------------
+
+new minSdkVersion:
+  API 19
+    => Android 4.4 KitKat
+
+--------------------------------------------------------------------------------
+
+https://developer.android.com/reference/java/nio/charset/StandardCharsets
+https://developer.android.com/reference/javax/crypto/spec/GCMParameterSpec
+  API 19
+    => no changes needed
+
+--------------------------------------------------------------------------------
+
+file: android\app\src\main\java\info\varden\hauk\system\security\KeyStoreHelper.java
+
+https://developer.android.com/reference/android/security/keystore/KeyGenParameterSpec
+https://developer.android.com/reference/android/security/keystore/KeyProperties
+  API 23
+    => add polyfill for APIs 19-22
+
+--------------------------------------------------------------------------------

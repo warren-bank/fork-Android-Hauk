@@ -1,0 +1,21 @@
+--------------------------------------------------------------------------------
+
+1. update build tools, etc
+2. rename directory:
+   - from: res/drawable
+     to:   res/drawable-v24
+3. convert xml vector drawables to png
+   - save to: res/drawable
+4. update
+   - file: KeyStoreHelper.java
+   - TODO: provide alternate implementation for older versions of Android
+5. decrease minSdkVersion
+   - to: API 11
+     if: AndroidX support library is replaced, or its version is sufficiently lowered
+   - to: API 14
+     if: AndroidX support library is left as-is, and its version remains older than 2023-10
+           https://android-developers.googleblog.com/2023/10/androidx-minsdkversion-19.html
+   - to: API 19
+     if: AndroidX support library is left as-is, and its version is the newest available
+
+--------------------------------------------------------------------------------

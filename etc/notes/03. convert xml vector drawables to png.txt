@@ -1,0 +1,41 @@
+--------------------------------------------------------------------------------
+
+VALUES:
+  * android\app\src\main\res\values\colors.xml
+      <color name="colorAccent">#D80037</color>
+  * android\app\src\main\res\values\styles.xml
+      <style name="HomeTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+      <style name="AppTheme" parent="Theme.AppCompat.DayNight.DarkActionBar">
+  * https://android.googlesource.com/platform/frameworks/support/+/refs/heads/androidx-main/appcompat/appcompat/src/main/res/
+    https://android.googlesource.com/platform/frameworks/support/+/refs/heads/androidx-main/appcompat/appcompat/src/main/res/values/themes_daynight.xml
+      <style name="Theme.AppCompat.DayNight" parent="Theme.AppCompat.Light" />
+      <style name="ThemeOverlay.AppCompat.DayNight.ActionBar">
+        <item name="colorControlNormal">?android:attr/textColorPrimary</item>
+      </style>
+  * https://android.googlesource.com/platform/frameworks/support/+/refs/heads/androidx-main/appcompat/appcompat/src/main/res/values/themes_base.xml
+      <style name="Base.Theme.AppCompat.Light" parent="Base.V7.Theme.AppCompat.Light">
+      <style name="Base.V7.Theme.AppCompat.Light" parent="Platform.AppCompat.Light">
+        <item name="editTextColor">?android:attr/textColorPrimary</item>
+      </style>
+      <style name="Platform.AppCompat.Light" parent="android:Theme.Holo.Light">
+        <item name="android:textColorPrimary">@color/abc_primary_text_material_light</item>
+      </style>
+  * https://android.googlesource.com/platform/frameworks/support/+/refs/heads/androidx-main/appcompat/appcompat/src/main/res/color/abc_primary_text_material_light.xml
+      <selector xmlns:android="http://schemas.android.com/apk/res/android">
+        <item android:state_enabled="false" android:color="@color/primary_text_disabled_material_light"/>
+        <item android:color="@color/primary_text_default_material_light"/>
+      </selector>
+  * https://android.googlesource.com/platform/frameworks/support/+/refs/heads/androidx-main/appcompat/appcompat/src/main/res/values/colors_material.xml
+      <color name="primary_text_disabled_material_light">#39000000</color>
+      <color name="primary_text_default_material_light">#de000000</color>
+
+--------------------------------------------------------------------------------
+
+CONVERSION TOOLS:
+  * https://github.com/seanghay/vector-drawable-svg
+    https://github.com/seanghay/vector-drawable-svg/blob/master/tests/simple-conversion.test.js
+  * https://github.com/seanghay/vector-drawable-nextjs
+    https://vd.floo.app/
+  * https://github.com/filamentgroup/svg-to-png
+
+--------------------------------------------------------------------------------
