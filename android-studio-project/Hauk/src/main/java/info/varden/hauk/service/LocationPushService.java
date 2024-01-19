@@ -22,6 +22,7 @@ import info.varden.hauk.struct.Share;
 import info.varden.hauk.struct.Version;
 import info.varden.hauk.system.preferences.PreferenceManager;
 import info.varden.hauk.utils.Log;
+import info.varden.hauk.utils.PermissionUtils;
 import info.varden.hauk.utils.ReceiverDataRegistry;
 import info.varden.hauk.utils.TimeUtils;
 
@@ -113,7 +114,7 @@ public final class LocationPushService extends Service {
         try {
             // Even though we previously requested location permission, we still have to check for
             // it when we actually use the location API.
-            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            if (PermissionUtils.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 Log.v("Location permission has been granted"); //NON-NLS
                 stopTask.setSession(this.share.getSession());
 

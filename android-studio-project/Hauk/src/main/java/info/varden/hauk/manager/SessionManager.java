@@ -30,6 +30,7 @@ import info.varden.hauk.struct.Version;
 import info.varden.hauk.system.LocationPermissionsNotGrantedException;
 import info.varden.hauk.system.LocationServicesDisabledException;
 import info.varden.hauk.utils.Log;
+import info.varden.hauk.utils.PermissionUtils;
 import info.varden.hauk.utils.ReceiverDataRegistry;
 
 /**
@@ -376,7 +377,7 @@ public abstract class SessionManager {
 
         // Even though we previously requested location permission, we still have to check for it
         // when we actually use the location API (user could have disabled it while connecting).
-        if (this.ctx.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (PermissionUtils.checkSelfPermission(this.ctx, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             Log.i("Location permission has been granted; sharing will commence"); //NON-NLS
             GNSSActiveHandler statusUpdateHandler = new GNSSStatusUpdateTask(share.getSession());
 
@@ -438,7 +439,7 @@ public abstract class SessionManager {
      * @return true if permission is granted, false if the user needs to be asked.
      */
     private boolean hasLocationPermission() {
-        if (this.ctx.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (PermissionUtils.checkSelfPermission(this.ctx, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             Log.w("Location permission has not been granted. Asking user for permission"); //NON-NLS
             requestLocationPermission();
             return false;
