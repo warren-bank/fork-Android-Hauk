@@ -2,6 +2,7 @@ package info.varden.hauk.system.security;
 
 import android.content.Context;
 import android.os.Build;
+import android.security.KeyPairGeneratorSpec;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 
@@ -34,7 +35,7 @@ public final class KeyStoreHelper {
     private static KeyStore store = null;
     private SecretKey key = null;
 
-    public static initStaticResources(Context context) {
+    public static void initStaticResources(Context context) {
         KeyStoreHelper.context = context;
     }
 
