@@ -1,0 +1,13 @@
+project.ext {
+  releaseVersionCode  = Integer.parseInt("1621000019", 10)  //Integer.MAX_VALUE == 2147483647
+  releaseVersion      = '1.6.2-1.00.00-19API'
+  javaVersion         = JavaVersion.VERSION_1_8
+  minSdkVersion       = 19
+  targetSdkVersion    = 33
+  compileSdkVersion   = 33
+  buildToolsVersion   = '33.0.1'
+
+  libVersionAndroidxAppCompat        = '1.6.1'
+  libVersionAndroidxConstraintLayout = '2.1.4'
+  libVersionAndroidxPreference       = '1.2.1'
+}
