@@ -127,3 +127,24 @@ OUTCOME:
   * no change
 
 --------------------------------------------------------------------------------
+
+NOTES:
+======
+
+Source: https://stackoverflow.com/a/54999789
+
+From Android 4.4 onwards, Android uses OkHttp for its internal HttpUrlConnection implementation.
+
+Source: https://twitter.com/JakeWharton/status/482563299511250944
+
+Versions of OkHttp used in Android:
+  Android 4.4:  OkHttp 1.1.2
+  Android 5.x:  OkHttp 2.0.0
+  Android 6.0:  OkHttp 2.4.0
+  Android 7.x:  OkHttp 2.6.0
+  Android 8.0+: OkHttp 2.7.5
+
+You can check what version of OkHttp Kitkat uses here:
+  https://android.googlesource.com/platform/external/okhttp/+/refs/heads/kitkat-release/pom.xml
+
+--------------------------------------------------------------------------------
