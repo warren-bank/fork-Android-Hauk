@@ -1,5 +1,6 @@
 package info.varden.hauk;
 
+import info.varden.hauk.http.security.NoSSLv3SocketFactory;
 import info.varden.hauk.http.security.TLSSocketFactory;
 import info.varden.hauk.system.security.KeyStoreHelper;
 
@@ -7,6 +8,7 @@ import android.app.Application;
 import android.os.Build;
 
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSocketFactory;
 
 public class App extends Application {
   @Override
@@ -18,7 +20,7 @@ public class App extends Application {
       (Build.VERSION.SDK_INT <  20)
     ) {
       try {
-        TLSSocketFactory socketFactory = new TLSSocketFactory();
+        SSLSocketFactory socketFactory = (SSLSocketFactory) new NoSSLv3SocketFactory( new TLSSocketFactory() );
 
         HttpsURLConnection.setDefaultSSLSocketFactory(socketFactory);
       }

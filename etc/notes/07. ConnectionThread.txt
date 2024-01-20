@@ -148,3 +148,12 @@ You can check what version of OkHttp Kitkat uses here:
   https://android.googlesource.com/platform/external/okhttp/+/refs/heads/kitkat-release/pom.xml
 
 --------------------------------------------------------------------------------
+
+NEW PLAN:
+  * code: https://stackoverflow.com/a/30302235
+    note: class NoSSLv3SocketFactory extends SSLSocketFactory
+
+OUTCOME:
+  * no change
+
+--------------------------------------------------------------------------------
