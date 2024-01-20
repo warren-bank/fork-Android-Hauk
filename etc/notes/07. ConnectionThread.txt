@@ -157,3 +157,15 @@ OUTCOME:
   * no change
 
 --------------------------------------------------------------------------------
+
+NEW PLAN:
+  * apply TLSPolicy intended for HTTPS .onion addresses
+    to all HTTPS addresses on Android 4.4 KitKat devices,
+    which allows the user to conditionally apply either:
+    - only: InsecureTrustManager
+    - both: InsecureTrustManager and InsecureHostnameVerifier
+
+OUTCOME:
+  * no change
+
+--------------------------------------------------------------------------------
