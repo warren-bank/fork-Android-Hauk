@@ -66,7 +66,14 @@ public class TLSSocketFactory extends SSLSocketFactory {
 
   private Socket enableTLSOnSocket(Socket socket) {
     if(socket != null && (socket instanceof SSLSocket)) {
-      ((SSLSocket)socket).setEnabledProtocols(new String[] {"TLSv1.1", "TLSv1.2"});
+      SSLSocket sslSocket = (SSLSocket) socket;
+
+      sslSocket.setEnabledProtocols(
+        sslSocket.getSupportedProtocols()
+      );
+      sslSocket.setEnabledCipherSuites(
+        sslSocket.getSupportedCipherSuites()
+      );
     }
     return socket;
   }

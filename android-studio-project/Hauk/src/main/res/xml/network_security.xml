@@ -6,8 +6,8 @@
         cleartextTrafficPermitted="true"
         tools:ignore="InsecureBaseConfiguration">
         <trust-anchors>
-            <certificates src="system" />
-            <certificates src="user" />
+            <certificates src="system" overridePins="true" />
+            <certificates src="user"   overridePins="true" />
         </trust-anchors>
     </base-config>
 </network-security-config>
