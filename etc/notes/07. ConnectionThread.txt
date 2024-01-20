@@ -1,0 +1,129 @@
+--------------------------------------------------------------------------------
+
+Android 4.4
+===========
+
+  * javax.net.ssl.SSLHandshakeException: javax.net.ssl.SSLProtocolException: SSL handshake aborted: ssl=0x565e9678: Failure in SSL library, usually a protocol error
+
+NOTES:
+======
+
+  * TLS 1.2 should've already been enabled for Android 4.4 by updates already present:
+      android-studio-project\Hauk\src\main\java\info\varden\hauk\App.java
+      android-studio-project\Hauk\src\main\java\info\varden\hauk\http\security\TLSSocketFactory.java
+
+--------------------------------------------------------------------------------
+
+TRACE:
+======
+
+android-studio-project\Hauk\src\main\java\info\varden\hauk\ui\MainActivity.java
+  line: 178
+  code: import info.varden.hauk.manager.SessionManager;
+        import info.varden.hauk.http.SessionInitiationPacket;
+
+        private SessionManager manager;
+
+        public void startSharing(@SuppressWarnings("unused") View view) {
+          SessionInitiationPacket.InitParameters initParams = new SessionInitiationPacket.InitParameters(server, username, password, duration, interval, minDistance, customID, e2ePass);
+          new ProxyHostnameResolverImpl(this, this.manager, this.uiResetTask, prefs, new SessionInitiationResponseHandlerImpl(), initParams, mode, allowAdoption, nickname, groupPin).resolve();
+        }
+
+android-studio-project\Hauk\src\main\java\info\varden\hauk\ui\ProxyHostnameResolverImpl.java
+  code: import info.varden.hauk.http.proxy.NameResolverTask;
+
+        public final class ProxyHostnameResolverImpl extends NameResolverTask {...}
+
+android-studio-project\Hauk\src\main\java\info\varden\hauk\http\proxy\NameResolverTask.java
+  note: when using a direct connection without any proxy, calls "onSuccess()" immediately
+
+android-studio-project\Hauk\src\main\java\info\varden\hauk\ui\ProxyHostnameResolverImpl.java
+  line: 102
+  code: protected void onSuccess(@Nullable Proxy proxy) {
+          CertificateValidationPolicy tlsPolicy = this.prefs.get(Constants.PREF_CERTIFICATE_VALIDATION);
+          ConnectionParameters params = new ConnectionParameters(null, null, timeout, tlsPolicy);
+          this.initParams.setConnectionParameters(params);
+          this.manager.shareLocation(this.initParams, this.responseHandler, this.allowAdoption ? AdoptabilityPreference.ALLOW_ADOPTION : AdoptabilityPreference.DISALLOW_ADOPTION);
+        }
+
+android-studio-project\Hauk\src\main\java\info\varden\hauk\manager\SessionManager.java
+  line: 293
+  code: import info.varden.hauk.http.SessionInitiationPacket;
+
+        public final void shareLocation(SessionInitiationPacket.InitParameters initParams, SessionInitiationResponseHandler upstreamCallback, String nickname) throws LocationPermissionsNotGrantedException, LocationServicesDisabledException {
+          new SessionInitiationPacket(this.ctx, initParams, handler, nickname).send();
+        }
+
+android-studio-project\Hauk\src\main\java\info\varden\hauk\http\SessionInitiationPacket.java
+  line: 25
+  code: public class SessionInitiationPacket extends Packet {...}
+
+android-studio-project\Hauk\src\main\java\info\varden\hauk\http\Packet.java
+  line: 79
+  code: public final void send() {
+          new ConnectionThread(new ConnectionThread.Callback() {...})
+              .execute(new ConnectionThread.Request(this.ctx, this.server + this.path, this.params, this.connParams));
+        }
+
+android-studio-project\Hauk\src\main\java\info\varden\hauk\http\ConnectionThread.java
+  line: 77
+  code: HttpURLConnection client = (HttpURLConnection) (proxy == null ? url.openConnection() : url.openConnection(proxy));
+  note: this SHOULD work..
+
+--------------------------------------------------------------------------------
+
+DEBUGGING:
+==========
+
+android-studio-project\Hauk\src\main\java\info\varden\hauk\http\ConnectionThread.java
+  line: 77
+  code: HttpURLConnection client = (HttpURLConnection) (proxy == null ? url.openConnection() : url.openConnection(proxy));
+  note: client is an instance of the class:
+          com.android.okhttp.internal.http.HttpsURLConnectionImpl$HttpUrlConnectionDelegate
+
+  line: 101
+  code: OutputStream os = client.getOutputStream();
+  note: this is the line that throws:
+          javax.net.ssl.SSLHandshakeException: javax.net.ssl.SSLProtocolException: SSL handshake aborted: ssl=0x565e9678: Failure in SSL library, usually a protocol error
+
+--------------------------------------------------------------------------------
+
+NEW PLAN:
+  * find where the "okhttp" library is initialized
+  * make this initialization conditional on:
+      (Build.VERSION.SDK_INT >= 20)
+
+OUTCOME:
+  * can't find where this HttpUrlConnectionDelegate is initialized
+
+--------------------------------------------------------------------------------
+
+NEW PLAN:
+  file: android-studio-project\Hauk\src\main\java\info\varden\hauk\http\ConnectionThread.java
+  line: 77
+  old code:
+    HttpURLConnection client = (HttpURLConnection) (proxy == null ? url.openConnection() : url.openConnection(proxy));
+    if (url.getHost().endsWith(".onion") && url.getProtocol().equals("https")) {
+      // ...
+    }
+  new code:
+    import info.varden.hauk.http.security.TLSSocketFactory;
+
+    TLSSocketFactory kitKatSocketFactory;
+
+    this.kitKatSocketFactory = new TLSSocketFactory();
+
+    HttpURLConnection client = (HttpURLConnection) (proxy == null ? url.openConnection() : url.openConnection(proxy));
+    if (url.getProtocol().equals("https")) {
+      if (url.getHost().endsWith(".onion")) {
+        // ...
+      }
+      else if ((Build.VERSION.SDK_INT >= 16) && (Build.VERSION.SDK_INT <  20)) {
+        ((HttpsURLConnection) client).setSSLSocketFactory(this.kitKatSocketFactory);
+      }
+    }
+
+OUTCOME:
+  * no change
+
+--------------------------------------------------------------------------------

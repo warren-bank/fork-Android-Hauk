@@ -2,6 +2,7 @@ package info.varden.hauk.http;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -29,6 +30,7 @@ import info.varden.hauk.R;
 import info.varden.hauk.http.security.CertificateValidationPolicy;
 import info.varden.hauk.http.security.InsecureHostnameVerifier;
 import info.varden.hauk.http.security.InsecureTrustManager;
+import info.varden.hauk.http.security.TLSSocketFactory;
 import info.varden.hauk.struct.Version;
 import info.varden.hauk.utils.Log;
 
@@ -43,6 +45,7 @@ public class ConnectionThread extends AsyncTask<ConnectionThread.Request, String
      * if applicable.
      */
     private final Callback callback;
+    private TLSSocketFactory kitKatSocketFactory;
 
     /**
      * This class is only for use by Packet. Other classes should always call the relevant packet to
@@ -53,6 +56,12 @@ public class ConnectionThread extends AsyncTask<ConnectionThread.Request, String
      */
     ConnectionThread(Callback callback) {
         this.callback = callback;
+        try {
+            this.kitKatSocketFactory = new TLSSocketFactory();
+        }
+        catch(Exception ex) {
+            this.kitKatSocketFactory = null;
+        }
     }
 
     /**
@@ -75,15 +84,21 @@ public class ConnectionThread extends AsyncTask<ConnectionThread.Request, String
             Proxy proxy = req.getParameters().getProxy();
             URL url = new URL(req.getURL());
             HttpURLConnection client = (HttpURLConnection) (proxy == null ? url.openConnection() : url.openConnection(proxy));
-            if (url.getHost().endsWith(".onion") && url.getProtocol().equals("https")) {
-                // Check if TLS validation should be disabled for .onion addresses over HTTPS.
-                if (req.getParameters().getTLSPolicy().equals(CertificateValidationPolicy.DISABLE_TRUST_ANCHOR_ONION)) {
-                    Log.v("[seq:%s] Setting insecure SSL socket factory for connection to comply with TLS policy", seq);
-                    ((HttpsURLConnection) client).setSSLSocketFactory(InsecureTrustManager.getSocketFactory());
-                } else if (req.getParameters().getTLSPolicy().equals(CertificateValidationPolicy.DISABLE_ALL_ONION)) {
-                    Log.v("[seq:%s] Setting insecure SSL socket factory and disabling hostname validation for connection to comply with TLS policy", seq);
-                    ((HttpsURLConnection) client).setSSLSocketFactory(InsecureTrustManager.getSocketFactory());
-                    ((HttpsURLConnection) client).setHostnameVerifier(new InsecureHostnameVerifier());
+
+            if (url.getProtocol().equals("https")) {
+                if (url.getHost().endsWith(".onion")) {
+                    // Check if TLS validation should be disabled for .onion addresses over HTTPS.
+                    if (req.getParameters().getTLSPolicy().equals(CertificateValidationPolicy.DISABLE_TRUST_ANCHOR_ONION)) {
+                        Log.v("[seq:%s] Setting insecure SSL socket factory for connection to comply with TLS policy", seq);
+                        ((HttpsURLConnection) client).setSSLSocketFactory(InsecureTrustManager.getSocketFactory());
+                    } else if (req.getParameters().getTLSPolicy().equals(CertificateValidationPolicy.DISABLE_ALL_ONION)) {
+                        Log.v("[seq:%s] Setting insecure SSL socket factory and disabling hostname validation for connection to comply with TLS policy", seq);
+                        ((HttpsURLConnection) client).setSSLSocketFactory(InsecureTrustManager.getSocketFactory());
+                        ((HttpsURLConnection) client).setHostnameVerifier(new InsecureHostnameVerifier());
+                    }
+                }
+                else if ((Build.VERSION.SDK_INT >= 16) && (Build.VERSION.SDK_INT <  20) && (this.kitKatSocketFactory != null)) {
+                    ((HttpsURLConnection) client).setSSLSocketFactory(this.kitKatSocketFactory);
                 }
             }
 
