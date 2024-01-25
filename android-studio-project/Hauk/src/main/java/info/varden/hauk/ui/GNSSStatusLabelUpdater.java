@@ -6,6 +6,7 @@ import android.widget.TextView;
 import info.varden.hauk.R;
 import info.varden.hauk.manager.GNSSStatusUpdateListener;
 import info.varden.hauk.utils.Log;
+import info.varden.hauk.utils.ResourceUtils;
 
 /**
  * Implementation of {@link info.varden.hauk.manager.SessionManager}'s GNSS status update listener
@@ -34,7 +35,7 @@ final class GNSSStatusLabelUpdater implements GNSSStatusUpdateListener {
     public void onShutdown() {
         Log.d("Resetting GNSS status label"); //NON-NLS
         this.statusLabel.setText(R.string.label_status_none);
-        this.statusLabel.setTextColor(this.ctx.getColor(R.color.statusOff));
+        this.statusLabel.setTextColor(ResourceUtils.getColor(this.ctx, R.color.statusOff));
         this.lastStatus = R.string.label_status_none;
         this.lastColor = R.color.statusOff;
     }
@@ -43,7 +44,7 @@ final class GNSSStatusLabelUpdater implements GNSSStatusUpdateListener {
     public void onStarted() {
         Log.d("Set GNSS status label to initial state"); //NON-NLS
         this.statusLabel.setText(R.string.label_status_wait);
-        this.statusLabel.setTextColor(this.ctx.getColor(R.color.statusWait));
+        this.statusLabel.setTextColor(ResourceUtils.getColor(this.ctx, R.color.statusWait));
         this.lastStatus = R.string.label_status_wait;
         this.lastColor = R.color.statusWait;
     }
@@ -54,7 +55,7 @@ final class GNSSStatusLabelUpdater implements GNSSStatusUpdateListener {
         // a location again.
         Log.i("GNSS location provider has stopped working; bound to coarse location provider"); //NON-NLS
         this.statusLabel.setText(R.string.label_status_lost_gnss);
-        this.statusLabel.setTextColor(this.ctx.getColor(R.color.statusWait));
+        this.statusLabel.setTextColor(ResourceUtils.getColor(this.ctx, R.color.statusWait));
         this.lastStatus = R.string.label_status_lost_gnss;
         this.lastColor = R.color.statusWait;
     }
@@ -65,7 +66,7 @@ final class GNSSStatusLabelUpdater implements GNSSStatusUpdateListener {
         // receiving GPS data.
         Log.i("Initial coarse location was received, awaiting high accuracy fix"); //NON-NLS
         this.statusLabel.setText(R.string.label_status_coarse);
-        this.statusLabel.setTextColor(this.ctx.getColor(R.color.statusWait));
+        this.statusLabel.setTextColor(ResourceUtils.getColor(this.ctx, R.color.statusWait));
         this.lastStatus = R.string.label_status_coarse;
         this.lastColor = R.color.statusWait;
     }
@@ -76,7 +77,7 @@ final class GNSSStatusLabelUpdater implements GNSSStatusUpdateListener {
         // receiving GPS data.
         Log.i("Initial high accuracy location was received, using GNSS location data for all future location updates"); //NON-NLS
         this.statusLabel.setText(R.string.label_status_ok);
-        this.statusLabel.setTextColor(this.ctx.getColor(R.color.statusOn));
+        this.statusLabel.setTextColor(ResourceUtils.getColor(this.ctx, R.color.statusOn));
         this.lastStatus = R.string.label_status_ok;
         this.lastColor = R.color.statusOn;
     }
@@ -85,13 +86,13 @@ final class GNSSStatusLabelUpdater implements GNSSStatusUpdateListener {
     public void onServerConnectionLost() {
         // Indicate to the user that the backend connection was lost.
         this.statusLabel.setText(R.string.label_status_disconnected);
-        this.statusLabel.setTextColor(this.ctx.getColor(R.color.statusDisconnected));
+        this.statusLabel.setTextColor(ResourceUtils.getColor(this.ctx, R.color.statusDisconnected));
     }
 
     @Override
     public void onServerConnectionRestored() {
         // Restore the previous status when connection to the backend is restored.
         this.statusLabel.setText(this.lastStatus);
-        this.statusLabel.setTextColor(this.ctx.getColor(this.lastColor));
+        this.statusLabel.setTextColor(ResourceUtils.getColor(this.ctx, this.lastColor));
     }
 }
