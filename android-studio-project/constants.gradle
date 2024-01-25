@@ -10,4 +10,5 @@ project.ext {
   libVersionAndroidxAppCompat        = '1.6.1'
   libVersionAndroidxConstraintLayout = '2.1.4'
   libVersionAndroidxPreference       = '1.2.1'
+  libVersionConscrypt                = '2.5.2'
 }

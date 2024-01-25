@@ -1,6 +1,6 @@
 package info.varden.hauk;
 
-import info.varden.hauk.http.security.TLSSocketFactory;
+import info.varden.hauk.http.security.SSLSocketFactoryCompat;
 import info.varden.hauk.system.security.KeyStoreHelper;
 
 import android.app.Application;
@@ -8,22 +8,11 @@ import android.os.Build;
 
 import javax.net.ssl.HttpsURLConnection;
 
-public class App extends Application {
+public class AppBase extends Application {
+
   @Override
   public void onCreate() {
     super.onCreate();
-
-    if (
-      (Build.VERSION.SDK_INT >= 16) &&
-      (Build.VERSION.SDK_INT <  20)
-    ) {
-      try {
-        TLSSocketFactory socketFactory = new TLSSocketFactory();
-
-        HttpsURLConnection.setDefaultSSLSocketFactory(socketFactory);
-      }
-      catch(Exception e) {}
-    }
 
     if (
       (Build.VERSION.SDK_INT >= 18) &&
@@ -37,4 +26,14 @@ public class App extends Application {
       catch(Exception e) {}
     }
   }
+
+  protected void upgradeSSLSocketFactory(boolean upgradeProtocols, boolean upgradeCipherSuites) {
+    try {
+      SSLSocketFactoryCompat socketFactory = new SSLSocketFactoryCompat(upgradeProtocols, upgradeCipherSuites);
+
+      HttpsURLConnection.setDefaultSSLSocketFactory(socketFactory);
+    }
+    catch(Exception e) {}
+  }
+
 }

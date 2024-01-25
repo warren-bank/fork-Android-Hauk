@@ -1,0 +1,186 @@
+#    # --------------------------------------------------------------------------------------------------
+#    # https://github.com/google/conscrypt/raw/2.5.2/common/src/main/java/org/conscrypt/NativeCrypto.java
+#    # --------------------------------------------------------------------------------------------------
+#    # native methods:
+#    #   static native
+#    #   native static
+#    # --------------------------------------------------------------------------------------------------
+
+-keep,includedescriptorclasses class org.conscrypt.NativeCrypto {
+  native <methods>;
+}
+
+#    # --------------------------------------------------------------------------------------------------
+#    # https://github.com/google/conscrypt/raw/2.5.2/android/src/main/java/org/conscrypt/Platform.java
+#    # --------------------------------------------------------------------------------------------------
+#    # reflection:
+#    #   Class.forName("
+#    #   getClass("
+#    #   .getMethod("
+#    #   .getDeclaredMethod("
+#    #   .getField("
+#    # --------------------------------------------------------------------------------------------------
+#
+#    # ========
+#    # classes:
+#    # ========
+#
+#    libcore.io.Libcore
+#    org.apache.harmony.xnet.provider.jsse.OpenSSLRSAPrivateKey
+#    android.os.Process
+#    android.util.EventLog
+#    javax.crypto.spec.GCMParameterSpec
+#    org.apache.harmony.security.utils.AlgNameMapper
+#    sun.security.x509.AlgorithmId
+#    java.net.InetAddress$InetAddressHolder
+#    android.system.StructTimeval
+#    libcore.io.StructTimeval
+#    android.system.OsConstants
+#    libcore.io.OsConstants
+#
+#    # ========
+#    # methods:
+#    # ========
+#
+#    libcore.io.Os {
+#      setsockoptTimeval
+#    }
+#    javax.net.ssl.SSLParameters {
+#      getEndpointIdentificationAlgorithm
+#      setEndpointIdentificationAlgorithm
+#      getUseCipherSuitesOrder
+#      setUseCipherSuitesOrder
+#      getServerNames
+#      setServerNames
+#    }
+#    android.os.Process {
+#      myUid
+#    }
+#    android.util.EventLog {
+#      writeEvent
+#    }
+#    javax.crypto.spec.GCMParameterSpec {
+#      getTLen
+#      getIV
+#    }
+#    java.security.spec.ECParameterSpec {
+#      getCurveName
+#      setCurveName
+#    }
+#    android.system.StructTimeval {
+#      fromMillis
+#    }
+#    libcore.io.StructTimeval {
+#      fromMillis
+#    }
+#    # https://android.googlesource.com/platform/libcore/+/jb-mr2-release/luni/src/main/java/org/apache/harmony/xnet/provider/jsse/OpenSSLRSAPrivateKey.java
+#    # https://android.googlesource.com/platform/libcore/+/jb-mr2-release/luni/src/main/java/org/apache/harmony/xnet/provider/jsse/OpenSSLKey.java
+#    org.apache.harmony.xnet.provider.jsse.OpenSSLRSAPrivateKey {
+#      getOpenSSLKey
+#    }
+#    org.apache.harmony.xnet.provider.jsse.OpenSSLKey {
+#      getPkeyContext
+#    }
+#    org.apache.harmony.security.utils.AlgNameMapper {
+#      map2AlgName
+#    }
+#    sun.security.x509.AlgorithmId {
+#      get
+#      getName
+#    }
+#    java.net.InetAddress {
+#      holder
+#    }
+#    java.net.InetAddress$InetAddressHolder {
+#      getOriginalHostName
+#    }
+#    java.net.InetSocketAddress {
+#      getHostString
+#    }
+#
+#    # =======
+#    # fields:
+#    # =======
+#
+#    # https://android.googlesource.com/platform/libcore/+/jb-mr2-release/luni/src/main/java/libcore/io/Libcore.java
+#    # https://android.googlesource.com/platform/libcore/+/jb-mr2-release/luni/src/main/java/libcore/io/Os.java
+#    libcore.io.Libcore {
+#      os
+#    }
+#    android.system.OsConstants {
+#      SOL_SOCKET
+#      SO_SNDTIMEO
+#    }
+#    libcore.io.OsConstants {
+#      SOL_SOCKET
+#      SO_SNDTIMEO
+#    }
+#
+#    # --------------------------------------------------------------------------------------------------
+#    # https://github.com/google/conscrypt/raw/2.5.2/common/src/main/java/org/conscrypt/OpenSSLAeadCipher.java
+#    # --------------------------------------------------------------------------------------------------
+#    # reflection:
+#    #   Class.forName("
+#    # --------------------------------------------------------------------------------------------------
+#
+#    # ========
+#    # classes:
+#    # ========
+#
+#    javax.crypto.AEADBadTagException
+#
+#    # --------------------------------------------------------------------------------------------------
+#    # https://github.com/google/conscrypt/raw/2.5.2/common/src/main/java/org/conscrypt/DuckTypedPSKKeyManager.java
+#    # --------------------------------------------------------------------------------------------------
+#    # reflection:
+#    #   .getMethod("
+#    # --------------------------------------------------------------------------------------------------
+#
+#    # ========
+#    # methods:
+#    # ========
+#
+#    interface org.conscrypt.PSKKeyManager {
+#      chooseServerKeyIdentityHint
+#      chooseClientKeyIdentity
+#      getKey
+#    }
+#
+#    # --------------------------------------------------------------------------------------------------
+#    # https://github.com/google/conscrypt/raw/2.5.2/common/src/main/java/org/conscrypt/TrustManagerImpl.java
+#    # --------------------------------------------------------------------------------------------------
+#    # reflection:
+#    #   .getDeclaredMethod("
+#    # --------------------------------------------------------------------------------------------------
+#
+#    # ========
+#    # methods:
+#    # ========
+#
+#    javax.net.ssl.SSLSession {
+#      getStatusResponses
+#      getPeerSignedCertificateTimestamp
+#    }
+
+-keep class javax.crypto.AEADBadTagException
+
+-keep class android.os.Process { *; }
+-keep class android.system.OsConstants { *; }
+-keep class android.system.StructTimeval { *; }
+-keep class android.util.EventLog { *; }
+-keep class java.net.InetAddress { *; }
+-keep class java.net.InetAddress$InetAddressHolder { *; }
+-keep class java.net.InetSocketAddress { *; }
+-keep class java.security.spec.ECParameterSpec { *; }
+-keep class javax.crypto.spec.GCMParameterSpec { *; }
+-keep class javax.net.ssl.SSLParameters { *; }
+-keep class javax.net.ssl.SSLSession { *; }
+-keep class libcore.io.Libcore { *; }
+-keep class libcore.io.Os { *; }
+-keep class libcore.io.OsConstants { *; }
+-keep class libcore.io.StructTimeval { *; }
+-keep class org.apache.harmony.security.utils.AlgNameMapper { *; }
+-keep class org.apache.harmony.xnet.provider.jsse.OpenSSLKey { *; }
+-keep class org.apache.harmony.xnet.provider.jsse.OpenSSLRSAPrivateKey { *; }
+-keep class org.conscrypt.PSKKeyManager { *; }
+-keep class sun.security.x509.AlgorithmId { *; }

@@ -21,17 +21,6 @@ android {
     archivesBaseName += "-$versionName"
   }
 
-  flavorDimensions "languageResources"
-
-  productFlavors {
-    withAllLanguageTranslations {
-      dimension "languageResources"
-    }
-    english {
-      dimension "languageResources"
-    }
-  }
-
   buildTypes {
     release {
       debuggable      false
@@ -40,6 +29,7 @@ android {
       minifyEnabled   true
       proguardFiles = [
         "proguard-rules.txt",
+        "proguard-conscrypt.txt",
         getDefaultProguardFile('proguard-android.txt')
       ]
     }
@@ -55,10 +45,38 @@ android {
     disable 'MissingTranslation'
     abortOnError true
   }
+
+  flavorDimensions "languageResources", "securityProvider"
+
+  productFlavors {
+    withAllLanguageTranslations {
+      dimension "languageResources"
+    }
+    english {
+      dimension "languageResources"
+    }
+    withSharedExternalConscryptOrDefaultSecurityProvider {
+      dimension "securityProvider"
+    }
+    withInternalConscryptSecurityProvider {
+      dimension "securityProvider"
+    }
+  }
+
+  splits {
+    abi {
+      enable gradle.startParameter.taskNames.any { it.toLowerCase().contains("withinternalconscryptsecurityprovider") }
+      reset()
+      include "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
+      universalApk false
+    }
+  }
 }
 
 dependencies {
-  implementation 'androidx.appcompat:appcompat:'                   + project.ext.libVersionAndroidxAppCompat            // https://mvnrepository.com/artifact/androidx.appcompat/appcompat
-  implementation 'androidx.constraintlayout:constraintlayout:'     + project.ext.libVersionAndroidxConstraintLayout     // https://mvnrepository.com/artifact/androidx.constraintlayout/constraintlayout
-  implementation 'androidx.preference:preference:'                 + project.ext.libVersionAndroidxPreference           // https://mvnrepository.com/artifact/androidx.preference/preference
+  implementation 'androidx.appcompat:appcompat:'                   + project.ext.libVersionAndroidxAppCompat                // https://mvnrepository.com/artifact/androidx.appcompat/appcompat
+  implementation 'androidx.constraintlayout:constraintlayout:'     + project.ext.libVersionAndroidxConstraintLayout         // https://mvnrepository.com/artifact/androidx.constraintlayout/constraintlayout
+  implementation 'androidx.preference:preference:'                 + project.ext.libVersionAndroidxPreference               // https://mvnrepository.com/artifact/androidx.preference/preference
+
+  withInternalConscryptSecurityProviderImplementation 'org.conscrypt:conscrypt-android:' + project.ext.libVersionConscrypt  // https://mvnrepository.com/artifact/org.conscrypt/conscrypt-android/2.5.2
 }
