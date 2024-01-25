@@ -21,3 +21,6 @@ out
 # Other
 .DS_Store
 local.properties
+
+# Exceptions
+!etc/bin

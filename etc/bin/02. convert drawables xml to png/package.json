@@ -1,0 +1,12 @@
+{
+  "name": "convert-drawables-xml-to-png",
+  "private": true,
+  "license": "GPL-2.0",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "svg-to-png": "^4.0.0",
+    "vector-drawable-svg": "^1.1.0"
+  }
+}
